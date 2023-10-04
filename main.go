@@ -22,9 +22,11 @@ func main() {
 
 	// API routes
 	c.Route("/api", func(r chi.Router) {
-		c.Get("/ping", handler.Ping)
-		c.Route("/whisper", func(r chi.Router) {
-			c.Get("/", handler.GetAllWhisperModels)
+		r.Get("/ping", handler.Ping)
+		r.Route("/whisper", func(wh chi.Router) {
+			wh.Get("/", handler.GetAllWhisperModels)
+			wh.Get("/download/{model}", handler.DownloadWhisperModel)
+			wh.Get("/download/{model}/coreml", handler.DownloadWhisperCoreMLModel)
 		})
 	})
 

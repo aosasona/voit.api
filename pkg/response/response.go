@@ -20,6 +20,13 @@ type OKResponse struct {
 	Data    any    `json:"data"`
 }
 
+type ErrResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Error   string `json:"error"`
+	Errors  map[string]string
+}
+
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
@@ -32,4 +39,14 @@ func OK(w http.ResponseWriter, r *http.Request, okResponse *OKResponse) {
 
 	render.Status(r, code)
 	render.Render(w, r, &Response{Ok: true, Message: okResponse.Message, Data: okResponse.Data})
+}
+
+func Error(w http.ResponseWriter, r *http.Request, errResponse *ErrResponse) {
+	code := errResponse.Code
+	if code == 0 {
+		code = http.StatusInternalServerError
+	}
+
+	render.Status(r, code)
+	render.Render(w, r, &Response{Ok: false, Message: errResponse.Message, Error: errResponse.Error, Errors: errResponse.Errors})
 }
